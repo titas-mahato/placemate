@@ -15,24 +15,25 @@ PlaceMate is designed as a **Multi-Tenant SaaS solution**:
 
 ```mermaid
 flowchart TD
-    subgraph Client Layer
+    subgraph Client ["Client Layer"]
         SPA["Single Page Application (React + TypeScript)"]
         Landing["PlaceMate Public Portal & Tenant Switcher"]
     end
 
-    subgraph Application Layer
-        API["PlaceMate Core REST API (Flask Application Factory)"]
-        Auth["Auth & RBAC Middleware"]
+    subgraph App ["Application Layer"]
+        API["PlaceMate Core REST API (Flask)"]
+        Auth["Auth & RBAC Guard"]
         TenantMgr["Tenant Context Resolver"]
         Eligibility["Automated Eligibility Engine"]
     end
 
-    subgraph Data Layer
+    subgraph Data ["Data Layer"]
         DB[("Relational Database (MySQL / PostgreSQL)")]
         Storage[("Secure Document Storage (Resumes)")]
     end
 
-    Client Layer -->|Same-Origin / Authenticated Requests| Application Layer
+    SPA -->|Authenticated API Requests| API
+    Landing -->|Public Tenant Lookup| API
     API --> Auth
     Auth --> TenantMgr
     TenantMgr --> Eligibility
