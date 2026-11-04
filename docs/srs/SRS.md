@@ -272,3 +272,45 @@ PlaceMate operates as a central Multi-Tenant Software-as-a-Service (SaaS) platfo
 ---
 
 *End of Software Requirements Specification (IEEE Std 830-1998 — Baseline Draft)*
+
+### 5.6 Quantitative FURPS+ Verification Matrix
+| Dimension | Metric | Target Specification | Verification Technique |
+| :--- | :--- | :--- | :--- |
+| **Functionality** | Access Control Matrix | 100% rejection on unauthorized endpoint mutations | Automated Pytest integration tests |
+| **Usability** | Accessibility Score | $\ge 95/100$ on Axe-core / WCAG 2.1 AA benchmarks | Automated Lighthouse & client audit |
+| **Reliability** | Availability & Fault Tolerance | $> 99.9\%$ uptime during concurrent load | Synthetic keep-alive & health checks |
+| **Performance** | API Response Latency (p95) | $< 200\text{ ms}$ under 250 concurrent requests | Locust stress test suite |
+| **Supportability** | Test Code Coverage | $\ge 85\%$ statement coverage on business logic | Pytest-cov automated report |
+
+---
+
+## 6. Student Eligibility Rules & Acceptance Criteria
+
+### 6.1 Automated Eligibility Calculation Specification
+1. **Academic Standing Cutoff**:
+   - Condition: $\text{Student CGPA} \ge \text{Drive Minimum CGPA}$.
+   - Evaluation: Evaluated via deterministic decimal comparison in `domain.py`.
+2. **Major / Department Eligibility**:
+   - Condition: $\text{Student Major} \in \text{Drive Eligible Departments List}$.
+   - Format: Case-insensitive token match supporting multi-department drives.
+3. **Cohort / Graduation Year Verification**:
+   - Condition: $\text{Student Graduation Year} = \text{Target Cohort Year}$ (Default: 2026).
+4. **Active Offer Limitation Policy (One Student - One Dream Offer)**:
+   - If a student has accepted an offer with CTC $\ge 12.0\text{ LPA}$, they are locked from applying to lower-tier drives.
+
+---
+
+## 7. Requirements Traceability Matrix (RTM Baseline)
+
+| User Story ID | Functional Reqs | Non-Functional Reqs | Module | Test Case ID | Status |
+| :--- | :--- | :--- | :--- | :--- | :---: |
+| **US-01** | FR-01, FR-02 | NFR-01, NFR-04 | Auth / Identity | TC-AUTH-01, TC-AUTH-02 | Verified |
+| **US-02** | FR-02, FR-03 | NFR-01, NFR-03 | Session Security | TC-AUTH-03, TC-AUTH-04 | Verified |
+| **US-03** | FR-03 | NFR-03, NFR-04 | Password Lifecycle | TC-AUTH-05 | Verified |
+| **US-04** | FR-06, FR-07 | NFR-09, NFR-10 | Student Profile | TC-STUDENT-01, TC-STUDENT-02 | In Progress |
+| **US-05** | FR-08 | NFR-07, NFR-08 | Resume Vault | TC-STUDENT-03 | In Progress |
+| **US-06** | FR-10, FR-11 | NFR-05, NFR-06 | Eligibility Engine | TC-ELIG-01, TC-ELIG-02 | In Progress |
+| **US-07** | FR-12, FR-13 | NFR-02, NFR-05 | Opportunities Feed | TC-DRIVE-01, TC-DRIVE-02 | Planned |
+| **US-08** | FR-14, FR-15 | NFR-08 | Application Pipeline | TC-APP-01, TC-APP-02 | Planned |
+| **US-09** | FR-16 | NFR-02, NFR-06 | Recruiter Onboarding | TC-REC-01 | Planned |
+| **US-10** | FR-17, FR-18 | NFR-05, NFR-07 | TPO Moderation | TC-ADMIN-01, TC-ADMIN-02 | Planned |
