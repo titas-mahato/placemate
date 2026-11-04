@@ -193,3 +193,42 @@ stateDiagram-v2
     REJECTED --> [*]
     WITHDRAWN --> [*]
 ```
+
+
+### 4.1 Multi-Participant Swimlane Activity Model
+```mermaid
+flowchart TD
+    subgraph Recruiter_Lane ["Recruiter (Corporate Partner)"]
+        R1[Create Recruitment Drive] --> R2[Define CGPA & Major Cutoffs]
+        R2 --> R3[Submit Drive for Moderation]
+        R_Review[Review Applicant Resumes] --> R_Decision{Selection Decision}
+        R_Decision -- Shortlist --> R_Interview[Schedule Technical Assessment]
+        R_Decision -- Reject --> R_Reject[Mark Rejected]
+        R_Interview --> R_Offer[Issue Selection Offer]
+    end
+
+    subgraph TPO_Lane ["TPO Office (Institutional Governance)"]
+        T1{Is Recruiter Vetted?}
+        R3 --> T1
+        T1 -- No --> T2[Verify Corporate Identity & Domain]
+        T2 --> T3[Approve Company Profile]
+        T3 --> T4[Publish Drive to Campus Feed]
+        T1 -- Yes --> T4
+    end
+
+    subgraph System_Lane ["PlaceMate Core Engine"]
+        T4 --> S1[Dispatch Placement Notification]
+        S2[Check Student CGPA >= Drive Cutoff] --> S3{Eligible?}
+        S3 -- Yes --> S4[Record Application in DB]
+        S3 -- No --> S5[Display Ineligibility Reason]
+        S4 --> R_Review
+    end
+
+    subgraph Student_Lane ["Student (Graduating Candidate)"]
+        S1 --> ST1[View Active Opportunities]
+        ST1 --> ST2[Select Drive & Click Apply]
+        ST2 --> S2
+        S5 --> ST3[Apply Disabled]
+        R_Offer --> ST4[Receive Placement Offer Notification]
+    end
+```
