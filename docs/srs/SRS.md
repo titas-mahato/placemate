@@ -314,3 +314,17 @@ PlaceMate operates as a central Multi-Tenant Software-as-a-Service (SaaS) platfo
 | **US-08** | FR-14, FR-15 | NFR-08 | Application Pipeline | TC-APP-01, TC-APP-02 | Planned |
 | **US-09** | FR-16 | NFR-02, NFR-06 | Recruiter Onboarding | TC-REC-01 | Planned |
 | **US-10** | FR-17, FR-18 | NFR-05, NFR-07 | TPO Moderation | TC-ADMIN-01, TC-ADMIN-02 | Planned |
+
+
+### 6.2 Standard Ineligibility Reason Codes
+| Error Code | Trigger Condition | Student UI Feedback |
+| :--- | :--- | :--- |
+| ERR_GPA_BELOW_CUTOFF | Student CGPA is lower than minimum job requirement | 'Your current CGPA does not meet the minimum cutoff specified for this role.' |
+| ERR_MAJOR_INELIGIBLE | Student degree or branch is not among eligible disciplines | 'This recruitment drive is open only to specified departments.' |
+| ERR_DEADLINE_PASSED | Current timestamp is greater than drive application deadline | 'The application deadline for this drive has closed.' |
+| ERR_ACTIVE_OFFER_LIMIT | Student already holds an accepted Dream Offer (CTC >= 12 LPA) | 'You have already secured a Dream Tier placement offer.' |
+| ERR_RESUME_MISSING | Student has not uploaded an approved PDF resume | 'Please upload and verify your resume before applying.' |
+
+### 6.3 Tenant Context Boundary Enforcement
+- Eligibility checks must strictly scope student queries using the session-derived 	enant_id.
+- Cross-tenant opportunities or student records are unconditionally filtered at the query layer.
