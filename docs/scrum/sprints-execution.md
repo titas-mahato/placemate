@@ -60,7 +60,9 @@ gantt
   - Frontend API Client & Auth Provider (`frontend/src/lib/`, `frontend/src/hooks/`)
 - **Sprint 2 Retrospective**:
   - *What went well*: High design consistency using Tailwind tokens; clear unit test boundary definition.
-  - *Sprint Status*: **PLANNED (Commits 11–25).**
+  - *What went well*: High design consistency using Tailwind tokens; clear unit test boundary definition; atomic UI primitives and API client contracts completed on schedule.
+  - *Improvements for Sprint 3*: Prioritize database schema index tuning and transaction safety for concurrent student applications.
+  - *Sprint Status*: **COMPLETED (Commits 17–29 pushed; all 24 Story Points delivered).**
 
 ---
 
