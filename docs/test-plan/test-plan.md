@@ -64,3 +64,20 @@ flowchart TD
   python -m pytest backend/tests/ -v
   npm test -- --run
   ```
+
+
+---
+
+## 4. Sprint 2 Test Verification Matrix & Quality Criteria
+
+### 4.1 Unit & Integration Test Coverage Thresholds
+| Component / Layer | Minimum Statement Coverage | Target Branch Coverage | Mandatory Assertions |
+| :--- | :---: | :---: | :--- |
+| **Authentication Primitives** | 95% | 90% | Salted `scrypt` hashing, CSRF header checks, session expiry |
+| **Eligibility Verification** | 100% | 100% | Boundary values (e.g. CGPA = 7.50, 7.49), major token parsing |
+| **Recruiter Access Boundaries** | 100% | 95% | IDOR prohibition across company IDs |
+| **Frontend UI Components** | 80% | 75% | Accessible ARIA attributes, keyboard navigation |
+
+### 4.2 Automated Quality Gates
+- **Pytest Exit Code 0**: 100% test pass rate required prior to release staging.
+- **Static Analysis**: Flake8 and TypeScript typecheck (`tsc --noEmit`) must report zero critical violations.
