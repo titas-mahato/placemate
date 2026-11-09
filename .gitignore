@@ -17,8 +17,9 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
-lib64/
+/lib/
+/lib64/
+!frontend/src/lib/
 parts/
 sdist/
 var/
@@ -58,6 +59,7 @@ out/
 uploads/
 storage/
 *.pdf
+*.bak
 
 # IDE & OS
 .vscode/
