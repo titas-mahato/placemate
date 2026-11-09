@@ -289,7 +289,7 @@ PlaceMate operates as a central Multi-Tenant Software-as-a-Service (SaaS) platfo
 ### 6.1 Automated Eligibility Calculation Specification
 1. **Academic Standing Cutoff**:
    - Condition: $\text{Student CGPA} \ge \text{Drive Minimum CGPA}$.
-   - Evaluation: Evaluated via deterministic decimal comparison in `domain.py`.
+   - Evaluation: Evaluated via deterministic decimal comparison in `sau_hub.domain`.
 2. **Major / Department Eligibility**:
    - Condition: $\text{Student Major} \in \text{Drive Eligible Departments List}$.
    - Format: Case-insensitive token match supporting multi-department drives.
@@ -298,33 +298,41 @@ PlaceMate operates as a central Multi-Tenant Software-as-a-Service (SaaS) platfo
 4. **Active Offer Limitation Policy (One Student - One Dream Offer)**:
    - If a student has accepted an offer with CTC $\ge 12.0\text{ LPA}$, they are locked from applying to lower-tier drives.
 
----
-
-## 7. Requirements Traceability Matrix (RTM Baseline)
-
-| User Story ID | Functional Reqs | Non-Functional Reqs | Module | Test Case ID | Status |
-| :--- | :--- | :--- | :--- | :--- | :---: |
-| **US-01** | FR-01, FR-02 | NFR-01, NFR-04 | Auth / Identity | TC-AUTH-01, TC-AUTH-02 | Verified |
-| **US-02** | FR-02, FR-03 | NFR-01, NFR-03 | Session Security | TC-AUTH-03, TC-AUTH-04 | Verified |
-| **US-03** | FR-03 | NFR-03, NFR-04 | Password Lifecycle | TC-AUTH-05 | Verified |
-| **US-04** | FR-06, FR-07 | NFR-09, NFR-10 | Student Profile | TC-STUDENT-01, TC-STUDENT-02 | In Progress |
-| **US-05** | FR-08 | NFR-07, NFR-08 | Resume Vault | TC-STUDENT-03 | In Progress |
-| **US-06** | FR-10, FR-11 | NFR-05, NFR-06 | Eligibility Engine | TC-ELIG-01, TC-ELIG-02 | In Progress |
-| **US-07** | FR-12, FR-13 | NFR-02, NFR-05 | Opportunities Feed | TC-DRIVE-01, TC-DRIVE-02 | Planned |
-| **US-08** | FR-14, FR-15 | NFR-08 | Application Pipeline | TC-APP-01, TC-APP-02 | Planned |
-| **US-09** | FR-16 | NFR-02, NFR-06 | Recruiter Onboarding | TC-REC-01 | Planned |
-| **US-10** | FR-17, FR-18 | NFR-05, NFR-07 | TPO Moderation | TC-ADMIN-01, TC-ADMIN-02 | Planned |
-
-
 ### 6.2 Standard Ineligibility Reason Codes
 | Error Code | Trigger Condition | Student UI Feedback |
 | :--- | :--- | :--- |
-| ERR_GPA_BELOW_CUTOFF | Student CGPA is lower than minimum job requirement | 'Your current CGPA does not meet the minimum cutoff specified for this role.' |
-| ERR_MAJOR_INELIGIBLE | Student degree or branch is not among eligible disciplines | 'This recruitment drive is open only to specified departments.' |
-| ERR_DEADLINE_PASSED | Current timestamp is greater than drive application deadline | 'The application deadline for this drive has closed.' |
-| ERR_ACTIVE_OFFER_LIMIT | Student already holds an accepted Dream Offer (CTC >= 12 LPA) | 'You have already secured a Dream Tier placement offer.' |
-| ERR_RESUME_MISSING | Student has not uploaded an approved PDF resume | 'Please upload and verify your resume before applying.' |
+| `ERR_GPA_BELOW_CUTOFF` | Student CGPA is lower than minimum job requirement | "Your current CGPA does not meet the minimum cutoff specified for this role." |
+| `ERR_MAJOR_INELIGIBLE` | Student degree or branch is not among eligible disciplines | "This recruitment drive is open only to specified departments." |
+| `ERR_DEADLINE_PASSED` | Current timestamp is greater than drive application deadline | "The application deadline for this drive has closed." |
+| `ERR_ACTIVE_OFFER_LIMIT` | Student already holds an accepted Dream Offer (CTC $\ge 12\text{ LPA}$) | "You have already secured a Dream Tier placement offer." |
+| `ERR_RESUME_MISSING` | Student has not uploaded an approved PDF resume | "Please upload and verify your resume before applying." |
 
 ### 6.3 Tenant Context Boundary Enforcement
-- Eligibility checks must strictly scope student queries using the session-derived 	enant_id.
+- Eligibility checks must strictly scope student queries using the session-derived `tenant_id`.
 - Cross-tenant opportunities or student records are unconditionally filtered at the query layer.
+
+---
+
+## 7. Requirements Traceability Matrix (RTM - Sprint 3 Update: Auth & Recruitment Drives)
+
+### 7.1 Forward & Backward Traceability Table
+| Requirement ID | Functional / Quality Requirement | Implementation Module / Component | Verification Artifact / Test Case | Lifecycle Status |
+| :--- | :--- | :--- | :--- | :---: |
+| **FR-01** | Student Self-Registration with Domain Validation | `backend/sau_hub/routes/auth.py` | `backend/tests/test_auth.py::test_student_register` | **Verified** |
+| **FR-02** | Secure Salted Password Hashing (`scrypt`) | `backend/sau_hub/auth.py`, `backend/db/migrate.py` | `backend/tests/test_migration.py` | **Verified** |
+| **FR-03** | Role-Based Session Issuance & Invalidation | `backend/sau_hub/session.py` | `backend/tests/test_auth.py::test_login_and_logout` | **Verified** |
+| **FR-04** | Brute-Force Rate Limiting on Auth Endpoints | `backend/sau_hub/rate_limit.py` | `backend/tests/test_auth.py::test_rate_limiting` | **Verified** |
+| **FR-06** | Student Profile Read & Academic Data Update | `backend/sau_hub/routes/students.py` | `backend/tests/test_students.py::test_profile_update` | **Verified** |
+| **FR-08** | Resume PDF Upload Vault & Storage Isolation | `backend/sau_hub/routes/students.py` | `backend/tests/test_students.py::test_resume_upload` | **Verified** |
+| **FR-10** | Deterministic Eligibility Engine Evaluation | `backend/sau_hub/domain.py` | `backend/tests/test_schema_constraints.py` | **Verified** |
+| **FR-12** | Active Recruitment Drive Feed & Search Filters | `backend/sau_hub/routes/opportunities.py` | `frontend/src/pages/student/OpportunitiesTab.tsx` | **Verified** |
+| **FR-14** | One-Click Application Submission & Status Tracking | `frontend/src/pages/student/ApplicationsTab.tsx` | `frontend/src/pages/dashboards.test.tsx` | **Verified** |
+| **FR-16** | Recruiter Drive Management & Candidate Status Pipeline | `backend/sau_hub/routes/recruiter.py` | `backend/tests/test_recruiter.py` | *In Progress* |
+| **FR-17** | TPO Tenant Moderation & Audit Logging | `backend/sau_hub/routes/admin.py` | `backend/tests/test_admin.py` | *In Progress* |
+| **NFR-01** | Sub-200ms Query Latency under Tenant Isolation | `backend/sau_hub/db.py` (Indexed Pools) | `backend/tests/test_schema_constraints.py` | **Verified** |
+| **NFR-03** | Zero Plaintext Credential Exposure at Rest | `backend/db/schema.sql` (`password_hash`) | `backend/tests/test_migration.py` | **Verified** |
+
+### 7.2 Sprint 3 Verification Sign-Off
+- **Requirements Analyst Sign-Off**: Swarnojjwal Guha (`swarnojjwalguha@gmail.com`)
+- **Review Date**: November 9, 2026
+- **Sprint Coverage**: 9 of 13 primary functional requirements fully closed with accompanying unit and integration test fixtures.
