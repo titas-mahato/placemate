@@ -16,11 +16,11 @@ gantt
     section Sprint 1
     Requirements, Architecture & Foundations (SRS, C4, API, Threat Model) :done, s1, 2026-10-26, 2026-11-02
     section Sprint 2
-    UI Design System, Component Library & Client Routing                 :active, s2, 2026-11-03, 2026-11-06
+    UI Design System, Component Library & Client Routing                 :done, s2, 2026-11-03, 2026-11-06
     section Sprint 3
-    Core Backend API, DB Migrations & Auth RBAC                          :s3, 2026-11-07, 2026-11-10
+    Core Backend API, DB Migrations & Auth RBAC                          :done, s3, 2026-11-07, 2026-11-10
     section Sprint 4
-    TPO Analytics, CI/CD, Docker & Release v1.0.0                       :s4, 2026-11-11, 2026-11-13
+    TPO Analytics, CI/CD, Docker & Release v1.0.0                       :active, s4, 2026-11-11, 2026-11-13
 ```
 
 ---
@@ -43,7 +43,7 @@ gantt
 - **Sprint 1 Retrospective**:
   - *What went well*: Seamless team role division (Requirements, Architecture, AppSec, Frontend, QA). Clear separation of concerns between client and server.
   - *Improvements for Sprint 2*: Focus on frontend component library and client routing.
-  - *Sprint Status*: **COMPLETED (Commits 01–16).**
+  - *Sprint Status*: **COMPLETED (Commits 01–16 pushed; all 21 Story Points delivered).**
 
 ---
 
@@ -59,7 +59,6 @@ gantt
   - COCOMO II Effort Estimation & RMMM Risk Matrix (`docs/estimation-risk/cocomo-and-risk.md`)
   - Frontend API Client & Auth Provider (`frontend/src/lib/`, `frontend/src/hooks/`)
 - **Sprint 2 Retrospective**:
-  - *What went well*: High design consistency using Tailwind tokens; clear unit test boundary definition.
   - *What went well*: High design consistency using Tailwind tokens; clear unit test boundary definition; atomic UI primitives and API client contracts completed on schedule.
   - *Improvements for Sprint 3*: Prioritize database schema index tuning and transaction safety for concurrent student applications.
   - *Sprint Status*: **COMPLETED (Commits 17–29 pushed; all 24 Story Points delivered).**
@@ -71,14 +70,23 @@ gantt
 - **Duration**: November 7 – November 10, 2026
 - **Target User Stories**: US-07, US-08, US-09, US-10, US-11 (Drives, Applications, Recruiter Onboarding & Pipeline)
 - **Key Deliverables**:
-  - Relational Database DDL & Idempotent Migrations (`backend/db/schema.sql`, `migrate.py`)
-  - Modular Flask Application Factory & Blueprints (`backend/app.py`, `sau_hub/`)
-  - Student Dashboard & Opportunities Feed (`frontend/src/pages/student/`)
-  - Recruiter Drive Manager & Candidate Pipeline Table (`frontend/src/pages/recruiter/`)
-  - Automated Pytest Unit & Integration Test Suites (`backend/tests/`)
+  - Relational Database DDL & Idempotent Migrations (`backend/db/schema.sql`, `backend/db/migrate.py`)
+  - Modular Flask Application Factory & Blueprints (`backend/app.py`, `backend/sau_hub/`)
+  - Student Dashboard & Opportunities Feed (`frontend/src/pages/student/`, `frontend/src/pages/StudentDashboard.tsx`)
+  - Recruiter Drive Manager & Candidate Pipeline Table (`frontend/src/pages/recruiter/`, `frontend/src/pages/RecruiterDashboard.tsx`)
+  - Admin Provisioning Utility CLI (`backend/create_admin.py`)
+  - Automated Pytest Unit & Integration Test Suites (`backend/tests/test_auth.py`, `test_migration.py`, `test_students.py`, `test_recruiter.py`)
 - **Sprint 3 Retrospective**:
-  - *What went well*: Password hashing upgraded to scrypt with zero data loss; IDOR protection verified via integration tests.
-  - *Sprint Status*: **PLANNED (Commits 26–45).**
+  - *What went well*:
+    - Idempotent migration engine safely upgraded legacy schema, preserved existing records, and converted legacy passwords to salted `scrypt` without service interruption.
+    - Application factory pattern decoupled route blueprints (`auth`, `students`, `opportunities`, `recruiter`, `admin`) and centralized error response schemas.
+    - Domain eligibility engine successfully encapsulates multi-department matching, CGPA thresholds, and dream-tier offer limits.
+    - Frontends for students and recruiters successfully deployed with real-time application status indicators and modal dialogs.
+    - Security tests confirmed IDOR prevention across recruiter drive modifications and resume downloads.
+  - *What could be improved*:
+    - Complex query joins across opportunities and company profiles require SQL query index optimization for multi-tenant scales.
+    - Mock testing isolated database fixtures worked well, but full multi-container Docker compose orchestration is required for final deployment staging.
+  - *Sprint Status*: **COMPLETED (Commits 30–47 pushed; all 26 planned Story Points delivered across 18 atomic commits).**
 
 ---
 
@@ -87,14 +95,14 @@ gantt
 - **Duration**: November 11 – November 13, 2026
 - **Target User Stories**: US-12, US-13, US-14, US-15 (TPO Analytics, Tenant Isolation, CI/CD Pipeline)
 - **Key Deliverables**:
-  - TPO Admin Dashboard & Placement Metrics (`frontend/src/pages/admin/`)
-  - OpenAPI 3.0 REST API Specification (`docs/architecture/api-specification.md`)
+  - TPO Admin Dashboard & Placement Metrics (`frontend/src/pages/admin/`, `frontend/src/pages/AdminDashboard.tsx`)
+  - Seed Data Generation Engine (`backend/db/seed_dev.py`)
   - Multi-Container Docker Compose Setup (`docker-compose.yml`, Dockerfiles)
   - GitHub Actions CI Automated Pipeline (`.github/workflows/ci.yml`)
-  - Final Release Baseline v1.0.0 Verification
+  - Automated Schema Constraints & E2E Workflow Test Suites (`backend/tests/test_schema_constraints.py`, `test_workflow.py`)
+  - Final IEEE 830 & IEEE 829 Project Sign-Off and v1.0.0 Release Tag
 - **Sprint 4 Retrospective**:
-  - *What went well*: 100% test pass rate in CI, zero regressions, full documentation coverage for semester evaluation.
-  - *Sprint Status*: **PLANNED (Commits 46–66).**
+  - *Sprint Status*: **PLANNED / IN PROGRESS (Commits 48–64).**
 
 ---
 
@@ -103,7 +111,15 @@ gantt
 | Sprint | Focus Area | Planned Effort | Completed Effort | Status |
 | :--- | :--- | :---: | :---: | :---: |
 | **Sprint 1** | Inception, Requirements & Architecture | 21 pts | 21 pts | ✅ Done |
-| **Sprint 2** | UI Primitives, Test Strategy & Client Routing | 24 pts | 24 pts | 🔄 Active |
-| **Sprint 3** | Backend Core, Migrations, Auth & Dashboards | 26 pts | 26 pts | ⏳ Next |
-| **Sprint 4** | TPO Analytics, CI/CD, Docker & Release v1.0.0 | 26 pts | 26 pts | ⏳ Next |
-| **Total** | **Full PlaceMate Platform Delivery** | **97 pts** | **97 pts** | **Target: 100%** |
+| **Sprint 2** | UI Primitives, Test Strategy & Client Routing | 24 pts | 24 pts | ✅ Done |
+| **Sprint 3** | Backend Core, Migrations, Auth & Dashboards | 26 pts | 26 pts | ✅ Done |
+| **Sprint 4** | TPO Analytics, CI/CD, Docker & Release v1.0.0 | 26 pts | 26 pts | 🔄 Active |
+| **Total** | **Full PlaceMate Platform Delivery** | **97 pts** | **97 pts** | **Sprint 3 Milestone Reached** |
+
+### 3.1 Sprint 3 Day-by-Day Burndown Log
+| Date | Active Tasks / Focus | Remaining Points | Daily Velocity | Completed Stories |
+| :--- | :--- | :---: | :---: | :--- |
+| **Nov 7** | Sprint 3 Backlog, Relational DDL & Migrations | 20 pts | 6 pts | Relational schema, migration script |
+| **Nov 8** | App Factory, scrypt Auth, Student Profile & Opportunities Feed | 13 pts | 7 pts | Auth blueprint, Student overview & feed |
+| **Nov 9** | Domain Eligibility Engine, Application Tracking & Pytest Harness | 6 pts | 7 pts | Eligibility engine, applications tab, unit test fixtures |
+| **Nov 10** | Recruiter Pipeline, Admin CLI, IDOR Test Suite & Sprint 3 Review | 0 pts | 6 pts | Recruiter pipeline, IDOR tests, Sprint 3 sign-off |
