@@ -232,3 +232,55 @@ flowchart TD
         R_Offer --> ST4[Receive Placement Offer Notification]
     end
 ```
+
+---
+
+## 5. UML State Machine Models
+
+### 5.1 Candidate Application Lifecycle State Machine
+This state machine formally specifies the transition invariants, guards, and event triggers for student recruitment applications across the multi-tenant hiring pipeline:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft: Student Views Drive
+    
+    Draft --> Applied: Submit Application [Eligible & Profile Complete]
+    Draft --> Ineligible: Attempt Submit [CGPA < Cutoff or Branch Ineligible]
+    Ineligible --> [*]: Feedback Error Code Displayed
+    
+    Applied --> UnderReview: Recruiter Opens Candidate File
+    Applied --> Withdrawn: Student Retracts Application [Before Review]
+    Withdrawn --> [*]
+    
+    UnderReview --> Shortlisted: Pass Resume Screening
+    UnderReview --> Rejected: Resume Screening Failed
+    
+    Shortlisted --> Interviewing: Assessment / Technical Round Scheduled
+    Interviewing --> RoundPassed: Clear Technical Evaluation
+    RoundPassed --> Interviewing: Next Assessment Round Scheduled
+    Interviewing --> Rejected: Evaluation Threshold Not Met
+    
+    RoundPassed --> Offered: Final Hiring Committee Approval
+    
+    Offered --> Accepted: Candidate Accepts Offer [Locks Lower-Tier Applications]
+    Offered --> Declined: Candidate Declines Offer
+    
+    Accepted --> Hired: Verification & Onboarding Complete
+    Hired --> [*]
+    Rejected --> [*]
+    Declined --> [*]
+```
+
+### 5.2 State Transition Matrix & Guard Conditions
+| Current State | Event / Trigger | Guard Condition | Next State | System Actions |
+| :--- | :--- | :--- | :--- | :--- |
+| `Draft` | `SUBMIT_APP` | `Student CGPA >= Drive Cutoff` AND `Department Eligible` | `Applied` | Record immutable timestamp, snapshot profile CGPA |
+| `Draft` | `SUBMIT_APP` | `Student CGPA < Drive Cutoff` | `Ineligible` | Block submission, return `ERR_GPA_BELOW_CUTOFF` |
+| `Applied` | `OPEN_PROFILE` | `Recruiter Authenticated` AND `Listing Owner` | `UnderReview` | Log access in audit log, update status indicator |
+| `UnderReview` | `EVALUATE_PASS` | `Recruiter Decision = Shortlist` | `Shortlisted` | Dispatch interview invite email, update student dashboard |
+| `UnderReview` | `EVALUATE_FAIL` | `Recruiter Decision = Reject` | `Rejected` | Record feedback code, close candidate pipeline branch |
+| `Shortlisted` | `SCHEDULE_ROUND`| `Interview Slot Available` | `Interviewing` | Emit calendar webhook notification |
+| `Interviewing` | `SUBMIT_OFFER`  | `All Rounds Cleared` AND `Open Headcount > 0` | `Offered` | Generate digital letter preview, notify candidate |
+| `Offered` | `ACCEPT_OFFER`  | `Candidate Confirms` | `Accepted` | Trigger Dream Tier lock if CTC $\ge 12\text{ LPA}$ |
+| `Offered` | `DECLINE_OFFER` | `Candidate Rejects Offer` | `Declined` | Release vacancy headcount back to recruitment pool |
+
