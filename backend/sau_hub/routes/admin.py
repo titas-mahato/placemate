@@ -62,18 +62,10 @@ def stats():
         "(deadline IS NULL OR deadline >= CURDATE())"
     )
 
-    # Existing database stores placement packages in salary_package (VARCHAR).
-    # Extract numeric text before averaging values such as "12 LPA".
+    # Placement packages stored as DECIMAL(5,2) in package_lpa
     avg = one(
         """
-        SELECT AVG(
-            CAST(
-                NULLIF(
-                    REGEXP_REPLACE(p.salary_package, '[^0-9.]', ''),
-                    ''
-                ) AS DECIMAL(10,2)
-            )
-        ) AS avg_package
+        SELECT AVG(p.package_lpa) AS avg_package
         FROM applications a
         JOIN placement_listings p
             ON p.placement_id = a.placement_id
