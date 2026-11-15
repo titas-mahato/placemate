@@ -20,7 +20,7 @@ gantt
     section Sprint 3
     Core Backend API, DB Migrations & Auth RBAC                          :done, s3, 2026-11-07, 2026-11-10
     section Sprint 4
-    TPO Analytics, CI/CD, Docker & Release v1.0.0                       :active, s4, 2026-11-11, 2026-11-13
+    TPO Analytics, CI/CD, Docker & Release v1.0.0                       :active, s4, 2026-11-11, 2026-11-15
 ```
 
 ---
@@ -92,7 +92,7 @@ gantt
 
 ### 🏃 Sprint 4: Moderation, Analytics, DevOps & Final Release (v1.0.0)
 - **Sprint Goal**: Finalize TPO moderation, real-time analytics, OpenAPI specification, containerization, GitHub Actions CI pipeline, and release sign-off.
-- **Duration**: November 11 – November 13, 2026
+- **Duration**: November 11 – November 15, 2026
 - **Target User Stories**: US-12, US-13, US-14, US-15 (TPO Analytics, Tenant Isolation, CI/CD Pipeline)
 - **Key Deliverables**:
   - TPO Admin Dashboard & Placement Metrics (`frontend/src/pages/admin/`, `frontend/src/pages/AdminDashboard.tsx`)
